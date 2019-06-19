@@ -1,28 +1,31 @@
 // we'll need axios
 import axios from "axios";
-
+export const FETCHING = 'FETCH'
+export const SUCCESS = 'SUCCESS'
+export const FAILURE ='FAILURE'
 // we'll need to create 3 different action types here.
 // one for fetching, one for success and one for failure
 
-export const Success = value => {
+export const success = value => {
   return {
-    type: "SUCCESS",
+    type: SUCCESS,
     payload: value
   };
 };
 
-export const Failure = value => {
+export const failure = value => {
   return {
-    type: "FAILURE",
+    type: FAILURE,
     payload: value
   };
 };
-export const Fetching = () => async dispatch => {
-  const AxiosData = axios.get("https://swapi.co/api/people");
+export const fetching = () => async dispatch => {
+  dispatch({type: FETCHING });
   try {
-    dispatch({ type: "FETCH", payload: Success(AxiosData.data) });
+    const AxiosData = await axios.get("https://swapi.co/api/people/");
+    setTimeout (() =>dispatch(success(AxiosData.data.results)), 6000);
   } catch (err) {
-    dispatch({ type: "FETCH", payload: Failure(AxiosData.statusText) });
+    setTimeout (() =>dispatch(failure(err.message)), 6000);
   }
 };
 // our action creator will be a function that returns a function
